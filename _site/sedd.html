@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- <title>VDA-lab :: Sequence Diversity Diagram for comparative analysis of multiple sequence alignments</title> -->
+  <!-- <meta name="description" content="AI at UHasselt
+"> -->
+
+  <link rel="stylesheet" href="/css/main.css">
+  <!-- <link rel="canonical" href="http://ai.uhasselt.be/sedd.html"> -->
+  <link rel="alternate" type="application/rss+xml" title="AI @ UHasselt" href="http://ai.uhasselt.be/feed.xml" />
+  <link href="https://fonts.googleapis.com/css?family=Lato|Open+Sans|Roboto" rel="stylesheet">
+
+  <!-- Begin Jekyll SEO tag v2.0.0 -->
+<title>Sequence Diversity Diagram for comparative analysis of multiple sequence alignments - AI @ UHasselt</title>
+<meta property="og:title" content="Sequence Diversity Diagram for comparative analysis of multiple sequence alignments" />
+<meta name="description" content="AI at UHasselt" />
+<meta property="og:description" content="AI at UHasselt" />
+<link rel="canonical" href="http://ai.uhasselt.be/sedd.html" />
+<meta property="og:url" content="http://ai.uhasselt.be/sedd.html" />
+<meta property="og:site_name" content="AI @ UHasselt" />
+<script type="application/ld+json">
+  {
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "headline": "Sequence Diversity Diagram for comparative analysis of multiple sequence alignments",
+    "description": "AI at UHasselt",
+    "logo": "http://ai.uhasselt.be/assets/vda-lab_logo.png",
+    "url": "http://ai.uhasselt.be/sedd.html"
+  }
+</script>
+<!-- End Jekyll SEO tag -->
+</head>
+
+
+  <body>
+    <script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-2131816-8', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+    <header class="site-header">
+
+  <div class="wrapper">
+
+    <a class="site-title" href="/">AI @ UHasselt</a>
+
+    <nav class="site-nav">
+      <a href="#" class="menu-icon">
+        <svg viewBox="0 0 18 15">
+          <path fill="#424242" d="M18,1.484c0,0.82-0.665,1.484-1.484,1.484H1.484C0.665,2.969,0,2.304,0,1.484l0,0C0,0.665,0.665,0,1.484,0 h15.031C17.335,0,18,0.665,18,1.484L18,1.484z"/>
+          <path fill="#424242" d="M18,7.516C18,8.335,17.335,9,16.516,9H1.484C0.665,9,0,8.335,0,7.516l0,0c0-0.82,0.665-1.484,1.484-1.484 h15.031C17.335,6.031,18,6.696,18,7.516L18,7.516z"/>
+          <path fill="#424242" d="M18,13.516C18,14.335,17.335,15,16.516,15H1.484C0.665,15,0,14.335,0,13.516l0,0 c0-0.82,0.665-1.484,1.484-1.484h15.031C17.335,12.031,18,12.696,18,13.516L18,13.516z"/>
+        </svg>
+      </a>
+
+      <div class="trigger">
+        
+        
+          
+        
+          
+              <!--  If we want to add color to the links -->
+              <!-- <a style="background-color:" href="/"  class="page-link" >
+                Home
+              </a> -->
+              <a href="/"  class="page-link" >
+                Home
+              </a>
+          
+        
+          
+              <!--  If we want to add color to the links -->
+              <!-- <a style="background-color:#b3e2cd" href="/people"  class="page-link" >
+                People
+              </a> -->
+              <a href="/people"  class="page-link" >
+                People
+              </a>
+          
+        
+          
+              <!--  If we want to add color to the links -->
+              <!-- <a style="background-color:#fdcdac" href="/portfolio"  class="page-link" >
+                Portfolio
+              </a> -->
+              <a href="/portfolio"  class="page-link" >
+                Portfolio
+              </a>
+          
+        
+          
+              <!--  If we want to add color to the links -->
+              <!-- <a style="background-color:#e6f5c9" href="/publications"  class="page-link" >
+                Publications
+              </a> -->
+              <a href="/publications"  class="page-link" >
+                Publications
+              </a>
+          
+        
+      </div>
+    </nav>
+
+  </div>
+
+</header>
+
+
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+
+  <header class="post-header">
+    <br/>
+    <!-- If we want to add color to the header -->
+    <!-- <h1 style="background-color:" class="post-title">Sequence Diversity Diagram for comparative analysis of multiple sequence alignments</h1> -->
+    <h1 class="post-title">Sequence Diversity Diagram for comparative analysis of multiple sequence alignments</h1>
+  </header>
+
+  <article class="post-content">
+    <p><em>Contribution by Ryo Sakai</em></p>
+
+<p>The sequence logo has been the long standing convention for visualization of multiple sequence alignments of nucleotides or amino acids for the past few decades. Although it effectively communicates the amount of information / conservation present at every position, this visual encoding falls short when the analysis task is to compare between two or more sets of aligned sequences. This challenge was posed by BioVis 2013 redesign contest.</p>
+
+<p>The contest provided a figure of sequence logos and the input data sets. The data included amino acid sequences of the adenylate kinase lid (AKL) domain. The figure compared sequence logos of 1) across all organisms, 2) from gram-negative bacteria and 3) from gram-positive bacteria. The figure legend also provided some context and shed some lights on what the analysts wanted to “see”.</p>
+
+<p><img src="/assets/adk.png" alt="Sequence logo of ADK protein" /></p>
+
+<p><em>From BioVis Redesign Contest 2013</em></p>
+
+<p>The first thing I felt was the use of the primary or very saturated color scheme made it very distracting and not at all easy on eyes. The large letters have too much visual emphasis and they were so overpowering that it made it painful, if not impossible, to look for small differences. In order to compare the difference between gram positive and negative samples, your eyes need to travel back and forth between figures and you need the all organism figure to see the scale of each set. For instance, as the legend suggests, “… positions (eg 5, 8, 30, 32) are differentially constrained in each subfamily…” I found it very difficult to compare these positions.</p>
+
+<p>Another motivation came from studying how the information content was calculated to determine the height of each letter. This statistical measure is more sophisticated than just calculating the frequency, and it was strictly position-based statistics. For instance in the figure below, it is not clear whether the Proline (P) at position 5 is followed by the Alanine (A) or another Proline (P) at the subsequent position 6. There may be or may not be such sequential conservation, and this information was absent in the traditional sequence logo representation.</p>
+
+<p><img src="/assets/adk_zoom.png" alt="Zoom of sequence logo of ADK protein" /></p>
+
+<h3 id="design-process">Design Process</h3>
+
+<p>My design process started roughly reproducing the sequence logos. This helped to understand the statistics behind the calculation of the sequence logos.</p>
+
+<p><img src="/assets/sedd_1.png" alt="SeDD 1" /></p>
+
+<p>Then, I wanted to explore the concept of the sequential conservation. I started to explore other visual encoding options. I refer to this process as “sketching with data.” First, I started to use the frequency instead of the information content. Each position is represented by a bar and the bar is divided based on the frequency of amino acids. The bars are also sorted based on the frequency. This is similar to the consensus logo representation.</p>
+
+<p><img src="/assets/sedd_2.png" alt="SeDD 2" /></p>
+
+<p>Then, I introduced small gaps of the same size between each division, which resulted in the following image.</p>
+
+<p><img src="/assets/sedd_3.png" alt="SeDD 3" /></p>
+
+<p>To check if there is any sequential conservation at all, I drew bands / ribbons between each bar segment-based on the sequential conservation. Then, it became quite obvious that there IS sequential conservation and it also indicated that there may be some potential subfamilies within a set.</p>
+
+<p><img src="/assets/sedd_4.png" alt="SeDD 4" /></p>
+
+<p>The view above was already getting interesting when I took away the use of color and letters of varying heights.  Then, I looked for other ways to even simplify further. The below is another idea to encode the frequency in the area of a circle, instead of using bar heights.</p>
+
+<p><img src="/assets/sedd_5.png" alt="SeDD 5" /></p>
+
+<p>To compare two sets, then I thought, I could turn each circle into a pie chart.  In the view below, I am highlighting one set in green.  This view was useful for spotting positions that are different between two sets, for example position 24.  And, those relatively large circles with split coloring indicated that both sets shared the same amino acid at the position. However, I didn’t find the split of the circle an intuitive visual encoding for a “common” amino acid.</p>
+
+<p><img src="/assets/sedd_6.png" alt="SeDD 6" /></p>
+
+<p>Then, I returned to the previous bar representation, which is basically the Parallel Sets presentation. I introduced a bar at the beginning to indicate that there are two sets to start with: gram positive and negative. I thought it looked nice actually without all the letters shown all the time. If you are looking for the patter of the similarity or difference, the user does not have to know the identity of every single amino acid while comparing two sets.</p>
+
+<p><img src="/assets/sedd_7.png" alt="SeDD 7" /></p>
+
+<p>I liked this parallel set representation, but I had to encode which amino acid it is. I came up with the following representation where each bar segment got annotation and when the two sets shared the same amino acid they were put close to the mid line. In other words, the consensus sequence would appear in the middle and the amino acid unique to one particular set were positioned away from the mid line. One of interesting insight in this view was the identification of the subgroup from the position 19 to 24. In this view, positioned each sequence to minimize its overlap and drew each sequence as a very thin hair line. As a result, sequential conservations are shown as bundles.</p>
+
+<p><img src="/assets/sedd_8.png" alt="SeDD 8" /></p>
+
+<p>Another challenge was to introduce the grouping of amino acid. In the original sequence logo, the color was used to group amino acids based on its structure and chemical properties. To encode the identity of amino acid and its grouping, I decided to use the vertical position. This resulted in a grid template to draw sequence diversity. This was the final visual encoding, and we call it Sequence Diversity Diagram. After filtering out some very thin lines (in other words, not very conserved positions), the final image looked like the following.</p>
+
+<p><img src="/assets/sedd_9.png" alt="SeDD 9" /></p>
+
+<p>This visual encoding made it easier to compare two sets of samples. When you want to find positions where two sets are similar, you look for the position where blue and magenta lines overlap, creating purple segments. Conversely, the difference is identified by looking for positions where the lines do not overlap. As also mentioned previously, the subgroup of blue line split going zig-zag from the position 19 was observed. This type of pattern were not detectable in the traditional sequence logo representations.</p>
+
+<p><img src="/assets/sedd_10.png" alt="SeDD 10" /></p>
+
+<p>Interestingly, another group from the Science Practice came up with very similar encoding and the grid system, called Sequence Bundle. I think the fact that two designers came up with the similar design solution independently sort of validates the visual encoding.</p>
+
+<p><img src="/assets/sedd_11.png" alt="SeDD 11" /></p>
+
+<p>Further information about Sequence Diversity Diagram and its implementation is available from this git repository. Please note that an error of swapping figures were intruded by the editor of the journal… The editors were unable to edit the original version, but published this Erratum to the original article.</p>
+
+<p>Sequence Diversity Diagram is not limited to amino acid sequence. The visualization technique was used to compare DNA sequences of DNA binding sites.</p>
+
+<p><img src="/assets/sedd_12.png" alt="SeDD 12" /></p>
+
+<p>References:</p>
+
+<ul>
+  <li>Sakai, Ryo, and Jan Aerts. 2014. “Sequence Diversity Diagram for Comparative Analysis of Multiple Sequence Alignments.” BMC Proceedings 8: S9</li>
+  <li>Pougach, Ksenia, et al. 2014. “Duplication of a Promiscuous Transcription Factor Drives the Emergence of a New Regulatory Network.” Nature Communications 5 (January): 4868</li>
+</ul>
+
+  </article>
+
+</div>
+
+      </div>
+    </div>
+
+    <footer class="site-footer">
+
+  <div class="wrapper">
+
+    <img src="/assets/uhasselt_logo.png"/ width="180px"> <h2 class="footer-heading">AI @ UHasselt</h2>
+
+  </div>
+
+</footer>
+
+
+  </body>
+
+</html>

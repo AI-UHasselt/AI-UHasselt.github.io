@@ -1,0 +1,11 @@
+http://vda-lab.be/blog.html
+http://vda-lab.be/contact.html
+http://vda-lab.be/index.html
+http://vda-lab.be/jobs.html
+http://vda-lab.be/lists.html
+http://vda-lab.be/people.html
+http://vda-lab.be/portfolio.html
+http://vda-lab.be/publications.html
+
+http://vda-lab.be/2016/09/hands-on-data-visualization-using-vega
+http://vda-lab.be/2016/09/msc-thesis

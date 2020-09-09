@@ -1,0 +1,996 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+<link rel="hub" href="https://pubsubhubbub.appspot.com"/>
+
+  <title type="text" xml:lang="en"></title>
+    <link type="application/atom+xml" href="/atom.xml" rel="self"/>
+    <link href="/"/>
+  <updated>2020-09-09T21:58:38Z</updated>
+  <id>/</id>
+  <author>
+    <name>Jan Aerts</name>
+    <email>jan.aerts@uhasselt.be</email>
+  </author>
+  <rights type="text">Copyright © 2020 {"name"=>"Jan Aerts", "email"=>"jan.aerts@uhasselt.be"}. All rights reserved.</rights>
+  
+  <entry>
+    <title>Hands-on data visualization using vega</title>
+    <link rel="alternate" type="text/html" href="/2016/09/hands-on-data-visualization-using-vega" />
+    <published>2016-09-14T23:48:00Z</published>
+    <updated>2016-09-14T23:48:00+02:00</updated>
+    <id>/2016/09/hands-on-data-visualization-using-vega</id>
+    <content type="html"><![CDATA[ <p>This is the vega (<a href="http://vega.github.io/">http://vega.github.io/</a>) version of the Processing tutorial that I published <a href="/2015/03/hands-on-data-visualization-using-processing-the-python-version/index.html">earlier</a>. There are also <a href="/2015/03/hands-on-data-visualization-using-processing-the-python-version">py-processing</a> and <a href="/2015/10/hands-on-data-visualization-using-p5">p5</a> versions. Vega is a declarative version of the very popular <a href="http://d3js.org">D3</a> toolkit. This tutorial holds numerous code snippets that can by copy/pasted and modified for your own purpose.</p>
+
+<p>The tutorial is written as much as possible in an incremental way. We start with something simple, and gradually add little bits and pieces that allow us to make more complex visualizations. So make sure to not skip parts of the tutorial: everything depends on everything that precedes it.</p>
+
+<p><img src="/assets/flights_double.png" alt="A pretty picture" /></p>
+
+<p><em>Figure 1 - A pretty picture</em></p>
+
+<h2 id="introduction-to-vega">Introduction to Vega</h2>
+<p>Vega is a <em>declarative</em> markup language, which means that you basically describe <em>what</em> you want to see, not <em>how</em> it is done. So you will not find <code class="highlighter-rouge">for</code>-loops or declaration of variables.</p>
+
+<p>A “<em>vega spec</em>” is defined as a json file, which describes at least the <em>data</em>, and the <em>marks</em> that should be presented on the screen. Let’s have a look at a minimal spec file:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"table"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">28</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">39</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">83</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">126</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">53</span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"marks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"table"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"y"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"steelblue"</span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>You can try this out in the inline vega editor at <a href="https://vega.github.io/vega-editor/?mode=vega">https://vega.github.io/vega-editor/?mode=vega</a>. You’ll get something like this:</p>
+
+<p><img src="/assets/vega-one.png" alt="vega-one" /></p>
+
+<p><em>Figure 2 - A simple vega plot</em></p>
+
+<p>Let’s go through this spec:</p>
+
+<ul>
+  <li><code class="highlighter-rouge">width</code> and <code class="highlighter-rouge">height</code>: define the size of the canvas</li>
+  <li><code class="highlighter-rouge">data</code>: This is where we define the data. First of all, we give the data a <code class="highlighter-rouge">name</code> which we can refer to later. The actual values can be hard-coded in this file (as is done here with the keyword <code class="highlighter-rouge">values</code> and an array), or can be loaded from a file or url (see later).</li>
+  <li><code class="highlighter-rouge">marks</code>: Define the mark (circle, text, rectangle, line, …) that should be drawn for each datapoint. This object has 3 parts:
+    <ul>
+      <li><code class="highlighter-rouge">type</code>: <em>what</em> should be drawn: a rectangle, symbol (default is a circle), line, etc</li>
+      <li><code class="highlighter-rouge">from</code>: which data this should be applied to; in this case the dataset with the name <code class="highlighter-rouge">table</code>.</li>
+      <li><code class="highlighter-rouge">properties</code>: describe the specifics of the marks: position and appearance, for example. You see that the value for <code class="highlighter-rouge">x</code> and <code class="highlighter-rouge">y</code> says <code class="highlighter-rouge"><span class="p">{</span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"something"</span><span class="p">}</span></code>, whereas that for <code class="highlighter-rouge">size</code> and <code class="highlighter-rouge">fill</code> uses <code class="highlighter-rouge"><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"something"</span><span class="p">}</span></code>. That’s a crucial difference. Whenever you want to use a fixed value, use <code class="highlighter-rouge">"value"</code>; if you want to refer to a value that is in the dataset (e.g. as a key in the json object as shown here, or a column name in a csv file) use <code class="highlighter-rouge">"field"</code>. We’ll see an additional option a bit later: <code class="highlighter-rouge">"signal"</code>.</li>
+    </ul>
+  </li>
+</ul>
+
+<h2 id="setting-things-up">Setting things up</h2>
+<p>Although we used the online vega editor above, we’ll need to use another approach if we want to load data from a file. In our case, we will have a CSV file with flights between airports. We will basically need to have 3 files:</p>
+
+<ul>
+  <li>an <code class="highlighter-rouge">index.html</code> which we will open in a web browser</li>
+  <li>the spec file (let’s call is <code class="highlighter-rouge">spec.json</code>)</li>
+  <li>the datafile (in our case: <code class="highlighter-rouge">flights.csv</code>)</li>
+</ul>
+
+<p><code class="highlighter-rouge">index.html</code> should look like this:</p>
+
+<div class="language-html highlighter-rouge"><pre class="highlight"><code><span class="nt">&lt;html&gt;</span>
+  <span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Flights visualization<span class="nt">&lt;/title&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://vega.github.io/vega-editor/vendor/d3.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://vega.github.io/vega-editor/vendor/d3.geo.projection.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://vega.github.io/vega-editor/vendor/topojson.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://vega.github.io/vega-editor/vendor/d3.layout.cloud.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+    <span class="nt">&lt;script </span><span class="na">src=</span><span class="s">"https://vega.github.io/vega/vega.min.js"</span><span class="nt">&gt;&lt;/script&gt;</span>
+  <span class="nt">&lt;/head&gt;</span>
+  <span class="nt">&lt;body&gt;</span>
+    <span class="nt">&lt;div</span> <span class="na">id=</span><span class="s">"vis"</span><span class="nt">&gt;&lt;/div&gt;</span>
+  <span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;script </span><span class="na">type=</span><span class="s">"text/javascript"</span><span class="nt">&gt;</span>
+<span class="c1">// parse a spec and create a visualization view</span>
+<span class="kd">function</span> <span class="nx">parse</span><span class="p">(</span><span class="nx">spec</span><span class="p">)</span> <span class="p">{</span>
+  <span class="nx">vg</span><span class="p">.</span><span class="nx">parse</span><span class="p">.</span><span class="nx">spec</span><span class="p">(</span><span class="nx">spec</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">error</span><span class="p">,</span> <span class="nx">chart</span><span class="p">)</span> <span class="p">{</span> <span class="nx">chart</span><span class="p">({</span><span class="na">el</span><span class="p">:</span><span class="s2">"#vis"</span><span class="p">}).</span><span class="nx">update</span><span class="p">();</span> <span class="p">});</span>
+<span class="p">}</span>
+<span class="nx">parse</span><span class="p">(</span><span class="s2">"spec.json"</span><span class="p">);</span>
+<span class="nt">&lt;/script&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre>
+</div>
+<p>This will load all dependencies. The crucial part is the line saying <code class="highlighter-rouge">parse("spec.json")</code>. That’s the place that indicates what the name of the specification file is.</p>
+
+<p>Do <em>not</em> use Microsoft Word to create these files! Code editors include <a href="https://atom.io/">atom</a>, <a href="http://www.sublimetext.com/">Sublime Text</a>, <a href="https://macromates.com/">TextMate</a> or just <a href="https://notepad-plus-plus.org/">Notepad</a> if you’re on Windows.</p>
+
+<h4 id="running-a-webserver">Running a webserver</h4>
+<p>So how do you “run” this visualization? You do this by running a local webserver. Depending on your operating system, there are several options for this. Getting these installed is not within the scope of this tutorial. In short, if you have <code class="highlighter-rouge">python</code> installed, type in <code class="highlighter-rouge">python -m SimpleHTTPServer</code> on the command line in the directory with the <code class="highlighter-rouge">index.html</code>, <code class="highlighter-rouge">spec.json</code> and data files. When that’s done, open your web browser and go the <code class="highlighter-rouge">http://localhost:8000</code>. If your <code class="highlighter-rouge">spec.json</code> looks like the one above, you should see the picture with the 3 blue dots.</p>
+
+<p>If you need help setting up the webserver, check out <a href="https://github.com/processing/p5.js/wiki/Local-server">https://github.com/processing/p5.js/wiki/Local-server</a>.</p>
+
+<h2 id="a-static-image">A static image</h2>
+
+<h3 id="getting-the-data">Getting the data</h3>
+<p>The data for this exercise can be downloaded <a href="../assets/flights.csv">here</a> and concerns <strong>flight information</strong> between different cities. Each entry in the dataset contains the following fields:</p>
+
+<ul>
+  <li>from_airport</li>
+  <li>from_city</li>
+  <li>from_country</li>
+  <li>from_long</li>
+  <li>from_lat</li>
+  <li>to_airport</li>
+  <li>to_city</li>
+  <li>to_country</li>
+  <li>to_long</li>
+  <li>to_lat</li>
+  <li>airline</li>
+  <li>airline_country</li>
+  <li>distance</li>
+</ul>
+
+<p>Alternatively, you can use an external URL as well, as we will do below.</p>
+
+<h3 id="loading-the-external-data">Loading the external data</h3>
+<p>Let’s create the same visual as above, but draw a circle for every airport in the file.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span><span class="w">
+
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"flights"</span><span class="p">,</span><span class="w">
+     </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://vda-lab.github.io/assets/flights.csv"</span><span class="p">,</span><span class="w">
+     </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">,</span><span class="w"> </span><span class="nt">"parse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">}}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+
+  </span><span class="nt">"marks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="s2">"flights"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_long"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_lat"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="s2">"steelblue"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fillOpacity"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Opening the url <a href="http://localhost:8080">http://localhost:8080</a> will show the visual, which will look like this:</p>
+
+<p><img src="/assets/vega-two.png" alt="vega-two" /></p>
+
+<p><em>Figure 3 - An upside-down map of the world</em></p>
+
+<p>In this plot, we load the data using the <code class="highlighter-rouge">url</code> tag in <code class="highlighter-rouge">data</code>, and let <code class="highlighter-rouge">x</code> and <code class="highlighter-rouge">y</code> be defined by the <code class="highlighter-rouge">from_long</code> and <code class="highlighter-rouge">from_lat</code> values for each datapoint. We set the colour to “steelblue” with the <code class="highlighter-rouge">fill</code> tag, and let these be transparent (<code class="highlighter-rouge">fillOpacity</code>) to make sure that we see overlap if there is one.</p>
+
+<p>Properties are in an <code class="highlighter-rouge">enter</code> tag. Just like D3 which it is based upon, vega uses the <code class="highlighter-rouge">enter</code>-<code class="highlighter-rouge">update</code>-<code class="highlighter-rouge">exit</code> pattern.</p>
+
+<p>Good resources to learn about <code class="highlighter-rouge">enter</code>-<code class="highlighter-rouge">update</code>-<code class="highlighter-rouge">exit</code>:
+* <a href="http://javascript.tutorialhorizon.com/2014/11/20/a-visual-explanation-of-the-enter-update-and-exit-selections-in-d3js/">@tutorialhorizon</a></p>
+
+<h3 id="scales">Scales</h3>
+
+<p>Plotting the longitude and latitude of all airports, you’d expect to end up with a map of the world (because - in general - airports are built on land rather than on the water). Unfortunately, what we get is not a good map; it’s upside-down.</p>
+
+<p>To solve this, and to scale the plot to use the whole canvas of 800x400 pixels, we will use the <code class="highlighter-rouge">scale</code> tag. The values for <code class="highlighter-rouge">from_long</code> range from -180 to 180 in the datafile, but the pixels we can use are between 0 and 800. The same goes for the <code class="highlighter-rouge">from_lat</code>: values range from -90 to 90, but we would like to use 0 to 400 on the screen.
+In the <code class="highlighter-rouge">spec.json</code> file, add the <code class="highlighter-rouge">scale</code> sections and alter the <code class="highlighter-rouge">x</code> and <code class="highlighter-rouge">y</code> value in the <code class="highlighter-rouge">marks</code>:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span><span class="w">
+
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"flights"</span><span class="p">,</span><span class="w">
+     </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://vda-lab.github.io/assets/flights.csv"</span><span class="p">,</span><span class="w">
+     </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">,</span><span class="w"> </span><span class="nt">"parse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+
+  </span><span class="nt">"scales"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLong2X"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">-180</span><span class="p">,</span><span class="mi">180</span><span class="p">],</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">800</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLat2Y"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">-90</span><span class="p">,</span><span class="mi">90</span><span class="p">],</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">400</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+
+  </span><span class="nt">"marks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="s2">"flights"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLong2X"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_long"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLat2Y"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_lat"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="s2">"steelblue"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fillOpacity"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>We’ll use quite verbose names for the scales, so that we can tell things apart… Each scale contains both the domain and the range in its name (e.g. <code class="highlighter-rouge">scaleLong2X</code>).</p>
+
+<h3 id="different-colours-and-sizes">Different colours and sizes</h3>
+<p>What if we want international flights to be coloured blue, and domestic flights coloured red? One way of doing this is to create 2 subsets of the data (one for domestic and one for international flights) using the <code class="highlighter-rouge">filter</code> operation. Change the <code class="highlighter-rouge">data</code> specification to the following:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"data"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic_flights"</span><span class="p">,</span><span class="w">
+   </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://vda-lab.github.io/assets/flights.csv"</span><span class="p">,</span><span class="w">
+   </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">,</span><span class="w"> </span><span class="nt">"parse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">},</span><span class="w">
+   </span><span class="nt">"transform"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+     </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"filter"</span><span class="p">,</span><span class="w"> </span><span class="nt">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datum.from_country == datum.to_country"</span><span class="p">}</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"international_flights"</span><span class="p">,</span><span class="w">
+   </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://vda-lab.github.io/assets/flights.csv"</span><span class="p">,</span><span class="w">
+   </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">,</span><span class="w"> </span><span class="nt">"parse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">},</span><span class="w">
+   </span><span class="nt">"transform"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+     </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"filter"</span><span class="p">,</span><span class="w"> </span><span class="nt">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datum.from_country != datum.to_country"</span><span class="p">}</span><span class="w">
+   </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>See <a href="https://github.com/vega/vega/wiki/Data-Transforms#-filter">here</a> for documentation on the <code class="highlighter-rouge">filter</code> transform.</p>
+
+<p>As you see, we now have 2 different datasets, even though they originate from the same file. The <code class="highlighter-rouge">domestic_flights</code> dataset is filtered so that it contains only those flights where the <code class="highlighter-rouge">from_country</code> is the same as the <code class="highlighter-rouge">to_country</code>. We do a similar thing for the <code class="highlighter-rouge">international_flights</code>. This is not very efficient, though, as we are reading the file twice. It’d be better to use a calculated field.</p>
+
+<p>We now have to change the spec for the marks as well, by drawing these 2 datasets separately.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"marks"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="s2">"domestic_flights"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLong2X"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_long"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLat2Y"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_lat"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="s2">"red"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fillOpacity"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="s2">"international_flights"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLong2X"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_long"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLat2Y"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_lat"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="s2">"blue"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fillOpacity"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+
+  </span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Notice that we now refer to <code class="highlighter-rouge">domestic_flights</code> and <code class="highlighter-rouge">international_flights</code> as the datasets, instead of <code class="highlighter-rouge">flights</code> as before.</p>
+
+<h3 id="different-colours-and-sizes---take-2">Different colours and sizes - take 2</h3>
+<p>A better way to do colour domestic flights in red and international ones in blue, is to use an additional scale.</p>
+
+<p>In the <code class="highlighter-rouge">data</code> section, replace what you have for the flight dataset at the moment with the following:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"flights"</span><span class="p">,</span><span class="w">
+ </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://vda-lab.github.io/assets/flights.csv"</span><span class="p">,</span><span class="w">
+ </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">,</span><span class="w"> </span><span class="nt">"parse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">},</span><span class="w">
+ </span><span class="nt">"transform"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+   </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"formula"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">,</span><span class="w">
+     </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datum.from_country == datum.to_country"</span><span class="p">}</span><span class="w">
+ </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+<p>This uses the <code class="highlighter-rouge">formula</code> keyword instead of <code class="highlighter-rouge">filter</code> as before, will check for each flight if the departure country is the same as the arrival country, and put that information in a new field called <code class="highlighter-rouge">domestic</code>.</p>
+
+<p>In the <code class="highlighter-rouge">scales</code> section, add</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleColour"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ordinal"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"flights"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">},</span><span class="w">
+  </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"red"</span><span class="p">,</span><span class="s2">"blue"</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Finally, replace the <code class="highlighter-rouge">fill</code> spec in the <code class="highlighter-rouge">marks</code> section with</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"fill"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleColour"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">}</span><span class="err">,</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>You’ll get this image:</p>
+
+<p><img src="/assets/flights_coloured_notscaled.png" alt="flights_coloured_notscaled" /></p>
+
+<h3 id="scaling-the-size-of-the-marks">Scaling the size of the marks</h3>
+<p>We also want to scale the size of the marks according to the distance of the flights. Similar to what we did above, we add the following <code class="highlighter-rouge">scale</code>:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleDistance2Radius"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">15406</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">150</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Whereas the <code class="highlighter-rouge">size</code> of the marks was <code class="highlighter-rouge"><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">}</span></code>, we now change that to</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"size"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleDistance2Radius"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"distance"</span><span class="p">}</span><span class="err">,</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>Resulting image:
+<img src="/assets/flights_coloured.png" alt="flights_coloured" /></p>
+
+<h3 id="one-final-overlapping-thing">One final overlapping thing…</h3>
+<p>As some of the dots can be relatively big, these can hide smaller dots in the background. One possible solution to this is to first draw the large dots (i.e. the long-distance flights), and draw the smaller ones later. This can be done by adding an additional transformation to the dataset: add the following to the <code class="highlighter-rouge">transform</code> part of the <code class="highlighter-rouge">data</code> section:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sort"</span><span class="p">,</span><span class="w"> </span><span class="nt">"by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-distance"</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="our-static-image">Our static image</h3>
+<p>The final code for this static image:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span><span class="w">
+
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+
+    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"flights"</span><span class="p">,</span><span class="w">
+     </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://vda-lab.github.io/assets/flights.csv"</span><span class="p">,</span><span class="w">
+     </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">,</span><span class="w"> </span><span class="nt">"parse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">},</span><span class="w">
+     </span><span class="nt">"transform"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+       </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"formula"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datum.from_country == datum.to_country"</span><span class="p">},</span><span class="w">
+       </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sort"</span><span class="p">,</span><span class="w"> </span><span class="nt">"by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-distance"</span><span class="p">}</span><span class="w">
+     </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+
+  </span><span class="p">],</span><span class="w">
+
+  </span><span class="nt">"scales"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLong2X"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">800</span><span class="p">],</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">-180</span><span class="p">,</span><span class="mi">180</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLat2Y"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">400</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">-90</span><span class="p">,</span><span class="mi">90</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleColour"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ordinal"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"flights"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"red"</span><span class="p">,</span><span class="s2">"blue"</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleDistance2Radius"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">15406</span><span class="p">],</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">150</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+
+  </span><span class="nt">"marks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="s2">"flights"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLong2X"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_long"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLat2Y"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_lat"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleDistance2Radius"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"distance"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleColour"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fillOpacity"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.05</span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h2 id="adding-interactivity">Adding interactivity</h2>
+<p>Since version 2.0, vega allows for more complex interactivity, using a reactive approach. For a good presentation on this, see <a href="https://idl.cs.washington.edu/papers/reactive-vega/">this paper</a> by Satyanarajan et al. <em>Definitely</em> check out the vega documentation available at <a href="https://github.com/vega/vega/wiki/Documentation">https://github.com/vega/vega/wiki/Documentation</a>.</p>
+
+<h3 id="detecting-the-mouse">Detecting the mouse</h3>
+<p>Let’s say we want to know what the x-position of the mouse is, and display that at the top of the screen. We’ll capture the <code class="highlighter-rouge">mousemove</code> signal and use that as input for a new text mark.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"signals"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mouseX"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"streams"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"*:mousemove"</span><span class="p">,</span><span class="w"> </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"event.x"</span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+<p>This signal is triggered every time that the mouse is moved, and it returns the x-position of the mouse (<code class="highlighter-rouge">event.x</code>). To make this position appear as text at the top of the screen, we’ll add a new mark. Crucially, we will set the text to not come from a <code class="highlighter-rouge">field</code>, but from this <code class="highlighter-rouge">signal</code>.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"interactive"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"black"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"fontSize"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"align"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"right"</span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"update"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"signal"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mouseX"</span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>You’ll see that the position reported at the top of the screen will extend beyond the initial 800 pixels that we said the picture should be. That’s because we set the type to <code class="highlighter-rouge">*:mousemove</code>. If we set this to <code class="highlighter-rouge">canvas:mousemove</code>, it will max out at the width of the canvas.</p>
+
+<h3 id="linking-the-mouse-position-to-mark-properties">Linking the mouse position to mark properties</h3>
+<p>All airports have their size determined by the distance (<code class="highlighter-rouge">"size": {"scale":"scaleRadius", "field":"distance"}</code>). Let’s try to have this size be determined by the position of the mouse on the screen instead.</p>
+
+<p>As we saw above, we can use <code class="highlighter-rouge">"signal": "mouseX"</code> instead of <code class="highlighter-rouge">"field": "distance"</code>. However, there are 2 additional things we need to take care of. First, we need to add a new scale that scales from the domain “0 -&gt; 800” to the range “3 -&gt; 15”.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleMouse2Radius"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">800</span><span class="p">],</span><span class="w">
+  </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">1500</span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+<p>So we will can now use</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"size"</span><span class="err">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="s2">"scaleMouse2Radius"</span><span class="p">,</span><span class="w"> </span><span class="nt">"signal"</span><span class="p">:</span><span class="s2">"mouseX"</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>When we refresh our browser, we will however see no points at all… Why is this? This has to do with the enter-update-exit pattern as defined in D3. The <code class="highlighter-rouge">enter</code> part of the <code class="highlighter-rouge">marks</code> section is applied to all datapoints <strong>only once</strong>; to be able to change this (and therefore to have interactivity), we need to put the <code class="highlighter-rouge">size</code> inside an <code class="highlighter-rouge">update</code> section. This is exactly what we did with the text example above as well: the text at the top of the screen is not static, so needs to be put in an <code class="highlighter-rouge">update</code> section.</p>
+
+<h3 id="what-airport-are-we-looking-at">What airport are we looking at?</h3>
+<p>Now let’s change the text example above to list the name of the airport that the mouse is hovering over, instead of the mouse position itself.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"signals"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hover"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"init"</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"streams"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+      </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol:mouseover"</span><span class="p">,</span><span class="w"> </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datum"</span><span class="p">},</span><span class="w">
+      </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol:mouseout"</span><span class="p">,</span><span class="w"> </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"null"</span><span class="p">}</span><span class="w">
+    </span><span class="p">]</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"title"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"init"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Departure airports"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"streams"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hover"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"hover ? hover.from_city : 'Departure airports'"</span><span class="w">
+    </span><span class="p">}]</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>As you can see, signals can be used as streams within other signals. The <code class="highlighter-rouge">hover</code> signal registers events every time the mouse enters or leaves (“hovers”) a mark. If it is on a mark, it will return that datum; otherwise it will return null. The <code class="highlighter-rouge">title</code> signal takes this <code class="highlighter-rouge">hover</code> stream as input (<code class="highlighter-rouge">"type": "hover"</code>). Every time this changes, it will return the <code class="highlighter-rouge">from_city</code> of the datum that the mouse is hovering over, or the text “Departure airports” if the mouse is not hovering over a datapoint.</p>
+
+<p>We use the <code class="highlighter-rouge">text</code> mark exactly the same as above.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"text"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"interactive"</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">600</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"black"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"fontSize"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"align"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"right"</span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="nt">"update"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"text"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"signal"</span><span class="p">:</span><span class="w"> </span><span class="s2">"title"</span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="filtering-airports-based-on-mouse-position">Filtering airports based on mouse position</h3>
+<p>We can adapt the above to filter airports based on our mouse position. Suppose that we want to draw only short-distance flights when the mouse is on the left, and long-distance flights when the mouse is on the right. We can do this by defining some additional signals:</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"minDistance"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"streams"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"mouseX"</span><span class="p">,</span><span class="w"> </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(mouseX-10)*(15406/800)"</span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="err">,</span><span class="w">
+</span><span class="p">{</span><span class="w">
+  </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"maxDistance"</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"streams"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"mouseX"</span><span class="p">,</span><span class="w"> </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(mouseX+10)*(15406/800)"</span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>We then use these signals to set the size of the marks: set it to 20 if the distance of the flight is in this range, otherwise to zero.</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="s2">"marks"</span><span class="err">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="s2">"flights"</span><span class="p">},</span><span class="w">
+    </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLong2X"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_long"</span><span class="p">},</span><span class="w">
+        </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLat2Y"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_lat"</span><span class="p">},</span><span class="w">
+        </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleColour"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">},</span><span class="w">
+        </span><span class="nt">"fillOpacity"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.2</span><span class="p">}</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nt">"update"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"inrange(datum.distance, minDistance, maxDistance)"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"20"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">]</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>You’ll see that this works, but is very slow. It’d be better to <em>filter</em> the dataset based on this distance, and only draw those instead of <em>all</em> datapoints most of which we draw with a size zero…</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span><span class="w">
+
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+
+    </span><span class="p">{</span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"flights"</span><span class="p">,</span><span class="w">
+     </span><span class="nt">"url"</span><span class="p">:</span><span class="w"> </span><span class="s2">"https://vda-lab.github.io/assets/flights.csv"</span><span class="p">,</span><span class="w">
+     </span><span class="nt">"format"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"csv"</span><span class="p">,</span><span class="w"> </span><span class="nt">"parse"</span><span class="p">:</span><span class="w"> </span><span class="s2">"auto"</span><span class="p">},</span><span class="w">
+     </span><span class="nt">"transform"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+       </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"formula"</span><span class="p">,</span><span class="w">
+         </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">,</span><span class="w">
+         </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"datum.from_country == datum.to_country"</span><span class="p">},</span><span class="w">
+       </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"sort"</span><span class="p">,</span><span class="w"> </span><span class="nt">"by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"-distance"</span><span class="p">}</span><span class="w">
+     </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+
+  </span><span class="p">],</span><span class="w">
+
+  </span><span class="nt">"scales"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLong2X"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">800</span><span class="p">],</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">-180</span><span class="p">,</span><span class="mi">180</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLat2Y"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">400</span><span class="p">,</span><span class="mi">0</span><span class="p">],</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">-90</span><span class="p">,</span><span class="mi">90</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleMouse2Distance"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">800</span><span class="p">],</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">15406</span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleColour"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ordinal"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"flights"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">"red"</span><span class="p">,</span><span class="s2">"blue"</span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+
+  </span><span class="nt">"signals"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mouseX"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"streams"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"canvas:mousemove"</span><span class="p">,</span><span class="w"> </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"event.x"</span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"minDistance"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"streams"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"mouseX"</span><span class="p">,</span><span class="w"> </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(mouseX-25)*(15406/800)"</span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"maxDistance"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"streams"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"mouseX"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleMouse2Distance"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"expr"</span><span class="p">:</span><span class="w"> </span><span class="s2">"(mouseX+25)"</span><span class="w"> </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+
+  </span><span class="nt">"marks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"symbol"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"data"</span><span class="p">:</span><span class="s2">"flights"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"transform"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w"> </span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"filter"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"test"</span><span class="p">:</span><span class="w"> </span><span class="s2">"inrange(datum.distance, minDistance, maxDistance)"</span><span class="w"> </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLong2X"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_long"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleLat2Y"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"from_lat"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"size"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"scaleColour"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"domestic"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"fillOpacity"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mf">0.1</span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<h3 id="creating-histograms">Creating histograms</h3>
+<p>Let’s try something else and create some histograms. In vega, we can do that using the <code class="highlighter-rouge">bin</code> transform (again: see <a href="https://github.com/vega/vega/wiki/Documentation">https://github.com/vega/vega/wiki/Documentation</a>)</p>
+
+<div class="language-json highlighter-rouge"><pre class="highlight"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"height"</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span><span class="w">
+  </span><span class="nt">"padding"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"top"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nt">"left"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="nt">"bottom"</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span><span class="w"> </span><span class="nt">"right"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">},</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"table"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"values"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">28</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">55</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">43</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">91</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">81</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">53</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">19</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">87</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">  </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">52</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">48</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">11</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">12</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">49</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">13</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">87</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">14</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">66</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">17</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">27</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">17</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">68</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">18</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">16</span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">19</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">49</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span><span class="w"> </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="mi">15</span><span class="p">}</span><span class="w">
+      </span><span class="p">],</span><span class="w">
+      </span><span class="nt">"transform"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"bin"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"field"</span><span class="p">:</span><span class="s2">"y"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"maxbins"</span><span class="p">:</span><span class="mi">5</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"type"</span><span class="p">:</span><span class="s2">"aggregate"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"groupby"</span><span class="p">:[</span><span class="s2">"bin_mid"</span><span class="p">],</span><span class="w">
+          </span><span class="nt">"summarize"</span><span class="p">:{</span><span class="nt">"bin_mid"</span><span class="p">:</span><span class="s2">"count"</span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"scales"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ordinal"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"width"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"table"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bin_mid"</span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"y"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"linear"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"range"</span><span class="p">:</span><span class="w"> </span><span class="s2">"height"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"domain"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"table"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"count_bin_mid"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"nice"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"axes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x"</span><span class="p">,</span><span class="w"> </span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x"</span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"y"</span><span class="p">,</span><span class="w"> </span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"y"</span><span class="p">}</span><span class="w">
+  </span><span class="p">],</span><span class="w">
+  </span><span class="nt">"marks"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"rect"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="s2">"table"</span><span class="p">},</span><span class="w">
+      </span><span class="nt">"properties"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"enter"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"x"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bin_mid"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"width"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x"</span><span class="p">,</span><span class="w"> </span><span class="nt">"band"</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span><span class="w"> </span><span class="nt">"offset"</span><span class="p">:</span><span class="w"> </span><span class="mi">-1</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"y"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"y"</span><span class="p">,</span><span class="w"> </span><span class="nt">"field"</span><span class="p">:</span><span class="w"> </span><span class="s2">"count_bin_mid"</span><span class="p">},</span><span class="w">
+          </span><span class="nt">"y2"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"scale"</span><span class="p">:</span><span class="w"> </span><span class="s2">"y"</span><span class="p">,</span><span class="w"> </span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"update"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"steelblue"</span><span class="p">}</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"hover"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"fill"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">"value"</span><span class="p">:</span><span class="w"> </span><span class="s2">"red"</span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+</div>
+
+<p>The key here is the <code class="highlighter-rouge">transform</code> that is applied to the data. Before this transformation, the data looks like this:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>x</th>
+      <th>y</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>28</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>55</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>43</td>
+    </tr>
+    <tr>
+      <td>…</td>
+      <td>…</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The data before transformation looks like this:</p>
+
+<p><img src="/assets/rawxy.png" alt="rawxy" /></p>
+
+<p>We’re applying two different transformations, and their order is important here. Switching the two will not give you the plot you saw above.</p>
+
+<p>The first transformation (<code class="highlighter-rouge">bin</code>) basically adds some new columns to the data: <code class="highlighter-rouge">bin_start</code>, <code class="highlighter-rouge">bin_end</code> and <code class="highlighter-rouge">bin_mid</code>. The intermediate data therefore looks like this.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>x</th>
+      <th>y</th>
+      <th>bin_start</th>
+      <th>bin_end</th>
+      <th>bin_mid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>28</td>
+      <td>20</td>
+      <td>40</td>
+      <td>30</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>55</td>
+      <td>40</td>
+      <td>60</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>43</td>
+      <td>40</td>
+      <td>60</td>
+      <td>50</td>
+    </tr>
+    <tr>
+      <td>…</td>
+      <td>…</td>
+      <td>…</td>
+      <td>…</td>
+      <td>…</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The second transformation (<code class="highlighter-rouge">aggregate</code>) takes this new <code class="highlighter-rouge">bin_mid</code> column and performs a count. The transformed data now looks like this:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>bin_mid</th>
+      <th>count_bin_mid</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>3</td>
+    </tr>
+    <tr>
+      <td>…</td>
+      <td>…</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>We can then use this <code class="highlighter-rouge">count_bin_mid</code> in the definition of the marks to set the value for <code class="highlighter-rouge">y</code>. The picture you get:</p>
+
+<p><img src="/assets/histogramxy.png" alt="histogramxy" /></p>
+
+<h2 id="further-information">Further information</h2>
+<p>Hopefully this gives you some indication of how vega works and what you can do with it. The data transformation aspect of vega is actually quite powerful. Dig into the data transform <a href="https://github.com/vega/vega/wiki/Data-Transforms">documentation</a> to try more things out. The <a href="https://github.com/vega/vega/wiki/Expressions">expressions documents</a> also gives some more information on how to reference mouse events, the canvas, etc.</p>
+
+<h3 id="debugging">Debugging</h3>
+<p>Vega recently added a very cool interface for debugging your specification. See <a href="http://vega.github.io/vega-tutorials/debugging/">http://vega.github.io/vega-tutorials/debugging/</a>.</p>
+ ]]></content>
+  </entry>
+  
+  <entry>
+    <title>Doing a master&#39;s thesis in the lab</title>
+    <link rel="alternate" type="text/html" href="/2016/09/msc-thesis" />
+    <published>2016-09-08T01:29:00Z</published>
+    <updated>2016-09-08T01:29:00+02:00</updated>
+    <id>/2016/09/msc-thesis</id>
+    <content type="html"><![CDATA[ <p>So you want to do your master’s thesis in the Visual Data Analysis Lab. Welcome.</p>
+
+<p><img src="/assets/homer.jpg" alt="homer" /></p>
+
+<p>To make this a success, we’ll want to make sure that everyone knows what’s expected, and how people in the lab work.</p>
+
+<h1 id="you-are-responsible">You are responsible</h1>
+<p>To state the obvious: this will be <strong>your</strong> thesis. Both your daily supervisor and I will be there to guide you and help you out, but it is <strong>you</strong> running the show. This means that in principle, your supervisor and I don’t keep track of the deadlines that you have to meet. After all, these differ widely between different masters and it gets really complicated for us to stay on top of that. So keep us informed of any nearing deadlines.</p>
+
+<p>Also: if you expect something specific from your supervisor or me (e.g. read a draft of your thesis), <strong>act early</strong>. As you’ll notice, we have very busy schedules so cannot guarantee that we will be able to read a piece of text within the next few days.</p>
+
+<h1 id="communication">Communication</h1>
+<p>Not only are we over-booked as regards to time, but we’re also buried under a pile of emails (at least I am; at time of writing this I have 1,209 unread emails, not including spam and mailing lists). This means that searching for information in emails becomes very difficult. Therefore, we use a messaging platform in the lab, called <strong>Mattermost</strong>. It’s basically identical to Slack (which you may or may not know), but is open source and installed on an ESAT server rather than somewhere in the US.</p>
+
+<p>The moment you start, I will add you to the <code class="highlighter-rouge">vdalab-students</code> team, and create a separate private channel for you. That channel is only visible to you, your supervisor(s) and me. Please use <strong>only</strong> this channel when you have to communicate in writing with your supervisor or me. Do <strong>not</strong> use email, unless for official communications (e.g. for official approvals) but even then: put a message on Mattermost that you sent an email.</p>
+
+<p>In the beginning of the academic year, we will also plan a series of <strong>meetings once every 2 months</strong>. Please prepare a presentation as well as a report to prepare for that meeting. What I expect in the report:</p>
+
+<ul>
+  <li>the <strong>main aim of the project</strong> (because that might change a bit as you go along)</li>
+  <li>the <strong>planning</strong> of what will be done when</li>
+  <li>the <strong>progress</strong> made (both in light of the schedule mentioned above, and content-wise)</li>
+  <li>the <strong>next steps</strong> that will be taken</li>
+</ul>
+
+<p>After each meeting, you should add to that report what we agreed to in that meeting. The report should eventually be uploaded on Mattermost. Obviously, these meetings are not the only meetings you/we will have, but it will force us to keep things on track. I expect supervisors and students to sit together weekly as well, if only briefly.</p>
+
+<h1 id="reading-material">Reading material</h1>
+<p>Books you need to read if you work on data visualization in the lab:</p>
+
+<ul>
+  <li><a href="https://www.crcpress.com/Visualization-Analysis-and-Design/Munzner/p/book/9781466508910">Visualization Analysis and Design (Tamara Munzner)</a></li>
+  <li><a href="http://shop.oreilly.com/product/9780596804183.do">Gamestorming (Gray, Brown &amp; Macanufo)</a>. See also <a href="http://gamestorming.com">http://gamestorming.com</a></li>
+  <li><a href="https://lirias.kuleuven.be/handle/123456789/521344">Ryo Sakai’s PhD thesis</a></li>
+  <li>Some example theses from previous years:
+    <ul>
+      <li><a href="/assets/thesis_zhang.pdf">Chunyang Zhang - Comparison of dimensionality reduction methods on skip-gram processed medical dataset</a></li>
+      <li><a href="/assets/thesis_pavlov.pdf">Kamen Pavlov - Coming full circle: using interactive data visualization to understand visual information processing in the human brain</a></li>
+    </ul>
+  </li>
+</ul>
+
+<h1 id="your-thesis-text">Your thesis text</h1>
+
+<p>It goes without saying that <strong>plagiarism</strong> is a no-no. Every thesis is automatically checked to see if it contains parts of text that have been published before. So don’t even go there.</p>
+
+<p>Please make sure that your text is <strong>readable</strong>. If you’re not a native English speaker, please have it read by someone who is. It’s very hard to read a text that is very poorly written. It’s not the role of your supervisor or me to improve your text language-wise.</p>
+
+<p>There is also the <a href="https://ilt.kuleuven.be/schrijfhulp_eng/"><strong>Academic Writing Assistant</strong></a> that can help you in improving your text, for example by looking for common grammatical errors, passive/active voice, etc.</p>
+
+<p>Your thesis should include at least the following parts (but check with your master!):</p>
+
+<ul>
+  <li><strong>abstract</strong> (in Dutch as well as in English)</li>
+  <li><strong>introduction</strong>:
+    <ul>
+      <li>what’s the bigger picture?</li>
+      <li>what is the question that you try to solve?</li>
+      <li>what can be impact be?</li>
+    </ul>
+  </li>
+  <li><strong>literature study</strong>: what is already known about this topic?
+    <ul>
+      <li>related issues</li>
+      <li>related techniques</li>
+      <li>related tools</li>
+    </ul>
+  </li>
+  <li><strong>material and methods</strong></li>
+  <li><strong>results</strong></li>
+  <li><strong>discussion</strong>: summarize the results and place them in a broader context</li>
+  <li><strong>conclusion</strong>
+    <ul>
+      <li>what is/are the main message(s) from this thesis?</li>
+      <li>what could be done in the future?</li>
+    </ul>
+  </li>
+  <li><strong>acknowledgments</strong></li>
+  <li><strong>references</strong></li>
+</ul>
+
+<p>The questions to be answered within each section as listed here are only indicative.</p>
+
+<p>A good tip for writing your thesis: <strong>write as you go</strong>. If you document what you do very well, you actually are already creating text for your thesis draft.</p>
+
+<h1 id="planning">Planning</h1>
+
+<p>Sticking to a schedule is a great help to delivering quality work. Depending on the master you’re following, there will be different rules. For the MSc Statistics, for example, you will have to present your literature study halfway through the year. Nevertheless, discuss with your daily supervisor how you can set up your schedule, depending on the things you want/need to do. One possible and very general timeline:</p>
+
+<ul>
+  <li>December: extensive literature review</li>
+  <li>2 months before you have to hand in: material &amp; methods</li>
+  <li>1 month before deadline: results</li>
+  <li>deadline: the rest</li>
+</ul>
+
+<p>And that’s, as they say, that.</p>
+ ]]></content>
+  </entry>
+  
+
+</feed>

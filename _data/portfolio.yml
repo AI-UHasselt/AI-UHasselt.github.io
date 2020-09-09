@@ -1,0 +1,12 @@
+- title: Sequence Diversity Diagram
+  class: viz
+  description: Making comparing DNA and RNA sequence motifs possible
+  url: http://vda-lab.github.io/sedd.html
+  image: sedd_segment.png
+
+- title: VAST 2015
+  class: viz
+  description: Visual anomaly detection in spatio-temporal data 1
+  url: http://hcil2.cs.umd.edu/newvarepository/VAST%20Challenge%202015/challenges/Mini-Challenge%201/entries/KULEUVEN/
+  image: vast2015_segment.png
+  video: http://hcil2.cs.umd.edu/newvarepository/VAST%20Challenge%202015/challenges/Mini-Challenge%201/entries/KULEUVEN/kuleuven-sakai-mc1-video.mp4
